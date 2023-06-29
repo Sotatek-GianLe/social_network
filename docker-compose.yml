@@ -6,10 +6,10 @@ services:
       dockerfile: Dockerfile
       target: development
     ports:
-      - "127.0.0.1:8888:3000"
+      - "127.0.0.1:3000:3000"
     networks:
       - bridge-network
-    command: sh -c "npm run build && npm run start"
+    command: sh -c "npm run build && npm run dev"
 
   social_api:
     build:
