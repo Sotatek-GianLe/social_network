@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
+import { PostModule } from './post/post.module';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { ConfigModule } from '@nestjs/config';
     MongooseModule.forRoot('mongodb://0.0.0.0:27017', {
       dbName: 'social_network',
     }),
+    PostModule,
   ],
   controllers: [AppController],
   providers: [AppService],
