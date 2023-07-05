@@ -2,6 +2,7 @@ import express from "express";
 import { merge, get } from "lodash";
 
 import { getUserBySessionToken } from "../db/users";
+import { responseObj } from "../helpers";
 
 export const isAuthenticated = async (
   req: express.Request,
@@ -12,13 +13,13 @@ export const isAuthenticated = async (
     const sessionToken = req.cookies[process.env.COOKIE_KEY];
 
     if (!sessionToken) {
-      return res.sendStatus(403);
+      return responseObj(res, { code: 403 });
     }
 
     const existingUser = await getUserBySessionToken(sessionToken);
 
     if (!existingUser) {
-      return res.sendStatus(403);
+      return responseObj(res, { code: 403 });
     }
 
     merge(req, { identity: existingUser });
@@ -26,7 +27,7 @@ export const isAuthenticated = async (
     return next();
   } catch (error) {
     console.log(error);
-    return res.sendStatus(400);
+    return responseObj(res, { code: 400 });
   }
 };
 
@@ -40,16 +41,16 @@ export const isOwner = async (
     const currentUserId = get(req, "identity._id") as string;
 
     if (!currentUserId) {
-      return res.sendStatus(400);
+      return responseObj(res, { code: 400 });
     }
 
     if (currentUserId.toString() !== id) {
-      return res.sendStatus(403);
+      return responseObj(res, { code: 403 });
     }
 
     next();
   } catch (error) {
     console.log(error);
-    return res.sendStatus(400);
+    return responseObj(res, { code: 400 });
   }
 };

@@ -1,3 +1,9 @@
+import {
+  BAD_REQUEST,
+  INTERNAL,
+  SUCCESS,
+  UNAUTHORIZE,
+} from "../constants/apiResponse";
 import crypto from "crypto";
 import express from "express";
 import { AnySchema } from "yup";
@@ -28,6 +34,51 @@ export const validate =
       });
       return next();
     } catch (err) {
-      return res.sendStatus(500);
+      return responseObj(res, {
+        code: 500,
+        errors: { type: err.name, message: err.message },
+      });
     }
   };
+
+export const responseObj = (
+  res: express.Response,
+  { errors = {}, code = 400, message = "", result = {} }
+) => {
+  if (code && !message) {
+    switch (code) {
+      case 200:
+        message = SUCCESS;
+        break;
+      case 401:
+        message = UNAUTHORIZE;
+        break;
+      case 403:
+        message = UNAUTHORIZE;
+        break;
+      case 500:
+        message = INTERNAL;
+        break;
+
+      default:
+        message = BAD_REQUEST;
+        break;
+    }
+  }
+
+  switch (code) {
+    case 200:
+      res.json({ result, code, message });
+      break;
+
+    case 401:
+    case 403:
+    case 500:
+      res.json({ errors, code, message });
+      break;
+
+    default:
+      res.json({ result, code, message });
+      break;
+  }
+};

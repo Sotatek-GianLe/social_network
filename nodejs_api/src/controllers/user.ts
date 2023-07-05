@@ -1,6 +1,7 @@
 import express from "express";
 
 import { deleteUserById, getUsers, getUserById } from "../db/users";
+import { responseObj } from "../helpers";
 
 export const getAllUsers = async (
   req: express.Request,
@@ -9,10 +10,10 @@ export const getAllUsers = async (
   try {
     const users = await getUsers();
 
-    return res.status(200).json(users);
+    return responseObj(res, { code: 200, result: users });
   } catch (error) {
     console.log(error);
-    return res.sendStatus(400);
+    return responseObj(res, { code: 400 });
   }
 };
 
@@ -24,10 +25,10 @@ export const getUserDetail = async (
     const { id } = req.params;
     const user = await getUserById(id);
 
-    return res.status(200).json(user);
+    return responseObj(res, { code: 200, result: user });
   } catch (error) {
     console.log(error);
-    return res.sendStatus(400);
+    return responseObj(res, { code: 400 });
   }
 };
 
@@ -40,7 +41,7 @@ export const updateUser = async (
     const { username } = req.body;
 
     if (!username) {
-      return res.sendStatus(400);
+      return responseObj(res, { code: 400 });
     }
 
     const user = await getUserById(id);
@@ -48,10 +49,13 @@ export const updateUser = async (
     user.username = username;
     await user.save();
 
-    return res.status(200).json(user).end();
+    return res
+      .status(200)
+      .json(responseObj(res, { code: res.statusCode, result: user }))
+      .end();
   } catch (error) {
     console.log(error);
-    return res.sendStatus(400);
+    return responseObj(res, { code: 400 });
   }
 };
 
@@ -64,9 +68,9 @@ export const deleteUser = async (
 
     const deletedUser = await deleteUserById(id);
 
-    return res.json(deletedUser);
+    return responseObj(res, { code: 200, result: deletedUser });
   } catch (error) {
     console.log(error);
-    return res.sendStatus(400);
+    return responseObj(res, { code: 400 });
   }
 };
