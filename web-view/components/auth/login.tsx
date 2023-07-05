@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import "@/src/app/globals.css";
+import "@/app/globals.css";
 import { MessageError } from "../commons/MessageError";
 import { useEffect, useState } from "react";
 
