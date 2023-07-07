@@ -63,7 +63,7 @@ export class AuthService {
         expiresIn: JWT_CONST.expired
       }
     );
-
+      
     return {
       access_token: accessToken
     };

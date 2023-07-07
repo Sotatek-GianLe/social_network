@@ -10,8 +10,13 @@ async function bootstrap() {
   let port = parseInt(process.env.PORT, 10) || 3000;
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter(),
+    new FastifyAdapter()
   );
+  app.enableCors({
+    allowedHeaders: '*',
+    origin: '*',
+    credentials: true,
+  });
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
