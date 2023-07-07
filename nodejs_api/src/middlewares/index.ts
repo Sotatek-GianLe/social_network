@@ -10,7 +10,7 @@ export const isAuthenticated = async (
   next: express.NextFunction
 ) => {
   try {
-    const sessionToken = req.cookies[process.env.COOKIE_KEY];
+    const sessionToken = req.signedCookies[process.env.COOKIE_KEY];
 
     if (!sessionToken) {
       return responseObj(res, { code: 403 });

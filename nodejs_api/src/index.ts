@@ -19,7 +19,7 @@ app.use(
 );
 
 app.use(compression());
-app.use(cookieParser());
+app.use(cookieParser(process.env.SECRET_KEY));
 app.use(bodyParser.json());
 
 const server = http.createServer(app);

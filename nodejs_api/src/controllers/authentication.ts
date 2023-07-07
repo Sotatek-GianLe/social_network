@@ -8,7 +8,10 @@ export const login = async (req: express.Request, res: express.Response) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return responseObj(res, { code: 400 });
+      return responseObj(res, {
+        code: 400,
+        errors: { message: "Email and password are required" },
+      });
     }
 
     const user = await getUserByEmail(email).select(
@@ -16,13 +19,19 @@ export const login = async (req: express.Request, res: express.Response) => {
     );
 
     if (!user) {
-      return responseObj(res, { code: 400 });
+      return responseObj(res, {
+        code: 400,
+        errors: { message: "This email does not exist" },
+      });
     }
 
     const expectedHash = authentication(user.authentication.salt, password);
 
     if (user.authentication.password != expectedHash) {
-      return responseObj(res, { code: 403 });
+      return responseObj(res, {
+        code: 403,
+        errors: { message: "The password is incorrect" },
+      });
     }
 
     const salt = random();
@@ -34,8 +43,8 @@ export const login = async (req: express.Request, res: express.Response) => {
     await user.save();
 
     res.cookie(process.env.COOKIE_KEY, user.authentication.sessionToken, {
-      domain: "localhost",
-      path: "/",
+      signed: true,
+      maxAge: 24 * 3600 * 1000,
     });
 
     return res
